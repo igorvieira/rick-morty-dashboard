@@ -29,6 +29,8 @@ export function Button({
 
   return (
     <button
+      type="button"
+      role="button"
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
     >

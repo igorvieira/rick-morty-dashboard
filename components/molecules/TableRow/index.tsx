@@ -1,4 +1,4 @@
-import { TableCell } from "@/components/atoms/TableCells";
+import { TableCell } from "@/components/atoms/TableCell";
 import { Character } from "@/type/character";
 
 interface TableRowProps {
@@ -20,8 +20,8 @@ export function TableRow({ character }: TableRowProps) {
       </TableCell>
       <TableCell>
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${character.status === 'Alive' ? 'bg-green-100 text-green-800' :
-          character.status === 'Dead' ? 'bg-red-100 text-red-800' :
-            'bg-gray-100 text-gray-800'
+            character.status === 'Dead' ? 'bg-red-100 text-red-800' :
+              'bg-gray-100 text-gray-800'
           }`}>
           {character.status}
         </span>

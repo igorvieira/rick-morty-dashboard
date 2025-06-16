@@ -76,3 +76,4 @@ test('does not show no characters message when loading', () => {
 
   expect(screen.queryByText('No characters found')).not.toBeInTheDocument();
 });
+

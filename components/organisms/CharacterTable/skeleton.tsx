@@ -12,7 +12,7 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
             <th className="px-6 py-4"><Skeleton height="1.25rem" /></th>
             <th className="px-6 py-4"><Skeleton height="1.25rem" /></th>
             <th className="px-6 py-4"><Skeleton height="1.25rem" /></th>
-          </tr>Add commentMore actions
+          </tr>
         </thead>
         <tbody>
           {Array.from({ length: rows }).map((_, index) => (

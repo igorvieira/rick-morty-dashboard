@@ -1,7 +1,7 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { fetchLocationStats } from '@/lib/fetch-location-stats';
 import { ChartSkeleton } from './skeleton';
 import { LocationStats } from '@/type/character';
@@ -10,13 +10,18 @@ interface LocationChartProps {
   searchTerm?: string;
 }
 
+const COLORS = [
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', 
+  '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C'
+];
+
 interface CustomLegendProps {
   data: LocationStats[];
   colors: string[];
 }
 
-function CustomLegend({ data, colors }: CustomLegendProps) {
- const total = useMemo(() => data.reduce((sum, item) => sum + item.count, 0), [data]);
+const CustomLegend = ({ data, colors }: CustomLegendProps) => {
+  const total = useMemo(() => data.reduce((sum, item) => sum + item.count, 0), [data]);
 
   return (
     <div className="mt-4 space-y-2">
@@ -24,7 +29,7 @@ function CustomLegend({ data, colors }: CustomLegendProps) {
         const percentage = ((item.count / total) * 100).toFixed(0);
         return (
           <div key={item.name} className="flex items-center text-sm">
-            <div
+            <div 
               className="w-3 h-3 rounded-full mr-3 flex-shrink-0"
               style={{ backgroundColor: colors[index % colors.length] }}
             />
@@ -36,12 +41,7 @@ function CustomLegend({ data, colors }: CustomLegendProps) {
       })}
     </div>
   );
-}
-
-const COLORS = [
-  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8',
-  '#82CA9D', '#FFC658', '#FF7C7C', '#8DD1E1', '#D084D0'
-];
+};
 
 export function LocationChart({ searchTerm }: LocationChartProps) {
   const [data, setData] = useState<LocationStats[]>([]);
@@ -49,28 +49,38 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
 
     const loadLocationStats = async () => {
       try {
         setLoading(true);
         setError(null);
+        
         const stats = await fetchLocationStats(searchTerm || '');
-        setData(stats);
-
+        
+        if (isMounted) {
+          setData(stats);
+        }
       } catch (err) {
-        setError('Failed to load location data');
-        console.error('Error loading location stats:', err);
+        if (isMounted) {
+          setError('Failed to load location data');
+          console.error('Error loading location stats:', err);
+        }
       } finally {
-        setLoading(false);
-       
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadLocationStats();
+
+    return () => {
+      isMounted = false;
+    };
   }, [searchTerm]);
 
-    const chartData = useMemo(() => data, [data]);
-
+  const chartData = useMemo(() => data, [data]);
 
   if (loading) {
     return <ChartSkeleton />;
@@ -93,12 +103,12 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
   }
 
   return (
-    <div className="h-96 flex flex-row mb-10">
+    <div className="h-96 flex flex-row gap-4">
       <div className="w-2/3 h-64">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data}
+              data={chartData}
               cx="50%"
               cy="50%"
               outerRadius={120}
@@ -113,8 +123,7 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
           </PieChart>
         </ResponsiveContainer>
       </div>
-
-      <CustomLegend data={chartData} colors={COLORS} />
+        <CustomLegend data={chartData} colors={COLORS} />
     </div>
   );
 }

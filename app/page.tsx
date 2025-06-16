@@ -1,17 +1,17 @@
 'use client';
 
-import { Button } from '@/components/atoms/Buttons';
-import { Modal } from '@/components/atoms/Modal';
-import { ScrollToTop } from '@/components/atoms/ScrollToTop';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useDebounce } from 'use-debounce';
+import { fetchCharacters } from '@/lib/fetch-characters';
 import { SearchInput } from '@/components/molecules/SearchInput';
 import { CharacterTable } from '@/components/organisms/CharacterTable';
 import { LocationChart } from '@/components/organisms/LocationChart';
+import { Modal } from '@/components/atoms/Modal';
+import { ScrollToTop } from '@/components/atoms/ScrollToTop';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { useUrlParams } from '@/hooks/useUrlParams';
-import { fetchCharacters } from '@/lib/fetch-characters';
+import { Button } from '@/components/atoms/Buttons';
 import { Character } from '@/type/character';
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useDebounce } from 'use-debounce';
 
 function HomeContent() {
   const { updateParam, getParam } = useUrlParams();
@@ -73,7 +73,7 @@ function HomeContent() {
     }
   }, [loading, hasMore, currentPage, debouncedSearchTerm, loadCharacters]);
 
-  useInfiniteScroll(fetchMoreData, hasMore);
+  const [, observerRef] = useInfiniteScroll(fetchMoreData, hasMore);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -145,6 +145,8 @@ function HomeContent() {
             <p className="text-gray-500">Scroll down to load more characters...</p>
           </div>
         )}
+
+        <div ref={observerRef} className="h-4" />
 
         <Modal
           isOpen={isModalOpen}

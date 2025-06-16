@@ -15,8 +15,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
-})
-
+});
 
 test('does not show button when scroll is below threshold', () => {
   render(<ScrollToTop threshold={500} />);

@@ -1,6 +1,5 @@
 import { TableCell } from "@/components/atoms/TableCell";
 import { Character } from "@/type/character";
-
 import Image from "next/image";
 
 interface TableRowProps {

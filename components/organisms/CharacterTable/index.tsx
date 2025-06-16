@@ -1,7 +1,6 @@
 import { Spinner } from "@/components/atoms/Spinner";
 import { TableCell } from "@/components/atoms/TableCell";
 import { TableRow } from "@/components/molecules/TableRow";
-
 import { TableSkeleton } from "./skeleton";
 import { Character } from "@/type/character";
 

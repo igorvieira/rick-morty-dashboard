@@ -14,12 +14,7 @@ vi.mock('recharts', () => ({
   PieChart: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="pie-chart">{children}</div>
   ),
-  Pie: ({ data }: {
-    data: {
-      name: string;
-      count: number;
-    }[]
-  }) => (
+  Pie: ({ data }: { data: { name: string, count: number}[] }) => (
     <div data-testid="pie" data-count={data.length}>
       {data.map((item, index) => (
         <div key={index} data-testid="pie-cell">{item.name}: {item.count}</div>

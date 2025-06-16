@@ -27,11 +27,9 @@ class CachedGraphQLClient {
     const cached = this.cache.get(cacheKey);
 
     if (cached && !this.isExpired(cached.timestamp)) {
-      console.log('🔄 Cache hit:', cacheKey.substring(0, 50) + '...');
       return cached.data as T;
     }
 
-    console.log('🌐 Fetching from API:', cacheKey.substring(0, 50) + '...');
     const data = await this.client.request<T>(query, variables);
     this.cache.set(cacheKey, { data, timestamp: Date.now() });
 

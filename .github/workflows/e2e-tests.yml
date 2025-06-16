@@ -1,4 +1,4 @@
-name: E2E TestsAdd commentMore actions
+name: E2E Tests
 
 on:
   push:

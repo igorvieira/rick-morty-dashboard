@@ -1,6 +1,6 @@
 'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useEffect, useState } from 'react';
 import { fetchLocationStats } from '@/lib/fetch-location-stats';
 import { ChartSkeleton } from './skeleton';
@@ -8,6 +8,34 @@ import { LocationStats } from '@/type/character';
 
 interface LocationChartProps {
   searchTerm?: string;
+}
+
+interface CustomLegendProps {
+  data: LocationStats[];
+  colors: string[];
+}
+
+function CustomLegend({ data, colors }: CustomLegendProps) {
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+
+  return (
+    <div className="mt-4 space-y-2">
+      {data.map((item, index) => {
+        const percentage = ((item.count / total) * 100).toFixed(0);
+        return (
+          <div key={item.name} className="flex items-center text-sm">
+            <div
+              className="w-3 h-3 rounded-full mr-3 flex-shrink-0"
+              style={{ backgroundColor: colors[index % colors.length] }}
+            />
+            <span className="text-gray-700 flex-1">
+              {item.name} — {item.count} ({percentage}%)
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 const COLORS = [
@@ -59,27 +87,28 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
   }
 
   return (
-    <div className="h-96">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            outerRadius={120}
-            fill="#8884d8"
-            dataKey="count"
-          >
-            {data.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="h-96 flex flex-row mb-10">
+      <div className="w-2/3 h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              outerRadius={120}
+              fill="#8884d8"
+              dataKey="count"
+            >
+              {data.map((_, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <CustomLegend data={data} colors={COLORS} />
     </div>
   );
 }

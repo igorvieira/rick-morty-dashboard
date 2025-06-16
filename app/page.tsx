@@ -119,7 +119,7 @@ function HomeContent() {
               {characters.length} character{characters.length !== 1 ? 's' : ''} found
               {debouncedSearchTerm && (
                 <span className="ml-1">
-                  for "{debouncedSearchTerm}"
+                  {`for "${debouncedSearchTerm}"`}
                 </span>
               )}
             </p>

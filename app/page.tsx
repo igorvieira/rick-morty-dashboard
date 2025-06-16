@@ -127,7 +127,7 @@ function HomeContent() {
               {characters.length} character{characters.length !== 1 ? 's' : ''} found
               {debouncedSearchTerm && (
                 <span className="ml-1">
-                  for "{debouncedSearchTerm}"
+                  {`for "${debouncedSearchTerm}"`}
                 </span>
               )}
             </p>
@@ -153,7 +153,7 @@ function HomeContent() {
         >
           <div className="p-6">
             <p className="text-sm text-gray-600 mb-4">
-              Character distribution by location{debouncedSearchTerm && ` for "${debouncedSearchTerm}"`}
+              {`Character distribution by location${debouncedSearchTerm ? ` for "${debouncedSearchTerm}"` : ''}`}
             </p>
             <LocationChart searchTerm={debouncedSearchTerm} />
           </div>

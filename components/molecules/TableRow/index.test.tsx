@@ -1,7 +1,7 @@
 import { render, screen, cleanup } from '@testing-library/react';
 import { test, expect, afterEach, vi } from 'vitest';
 import { TableRow } from './';
-import { Character } from '@/types/character';
+import { Character } from '@/type/character';
 
 // Mock TableCell component
 vi.mock('../atoms/TableCell', () => ({

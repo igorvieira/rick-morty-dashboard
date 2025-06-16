@@ -1,5 +1,17 @@
 import { gql } from 'graphql-request';
 
+export const LOCATION_STATS_QUERY = gql`
+  query GetLocationStats {
+    characters {
+      results {
+        location {
+          name
+        }
+      }
+    }
+  }
+`;
+
 export const CHARACTERS_QUERY = gql`
   query GetCharacters($page: Int, $name: String) {
     characters(page: $page, filter: { name: $name }) {

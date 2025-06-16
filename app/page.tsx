@@ -1,26 +1,42 @@
 'use client';
 
+import { Button } from '@/components/atoms/Buttons';
+import { Modal } from '@/components/atoms/Modal';
 import { SearchInput } from '@/components/molecules/SearchInput';
 import { CharacterTable } from '@/components/organisms/CharacterTable';
 import { LocationChart } from '@/components/organisms/LocationChart';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { useUrlParams } from '@/hooks/useUrlParams';
 import { fetchCharacters } from '@/lib/fetch-characters';
-import { Character, LocationStats } from '@/type/character';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Character } from '@/type/character';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useDebounce } from 'use-debounce';
 
-
-export default function Home() {
+function HomeContent() {
+  const { updateParam, getParam } = useUrlParams();
+  const initialSearchTerm = getParam('search');
+  
   const [characters, setCharacters] = useState<Character[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Update URL when search term changes
+  useEffect(() => {
+    updateParam('search', debouncedSearchTerm);
+  }, [debouncedSearchTerm, updateParam]);
 
   const loadCharacters = useCallback(async (page: number, search: string, reset: boolean = false) => {
-    setLoading(true);
+    if (reset) {
+      setInitialLoading(true);
+    } else {
+      setLoading(true);
+    }
+    
     try {
       const data = await fetchCharacters(search, page);
       const newCharacters = data.characters.results;
@@ -43,8 +59,8 @@ export default function Home() {
 
   // Initial load
   useEffect(() => {
-    loadCharacters(1, '', true);
-  }, [loadCharacters]);
+    loadCharacters(1, initialSearchTerm, true);
+  }, [loadCharacters, initialSearchTerm]);
 
   // Search effect
   useEffect(() => {
@@ -62,33 +78,16 @@ export default function Home() {
 
   useInfiniteScroll(fetchMoreData, hasMore);
 
-  // Calculate location stats
-  const locationStats: LocationStats[] = useMemo(() => {
-    const locationCounts: Record<string, number> = {};
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
 
-    characters.forEach(character => {
-      const location = character.location.name;
-      if (location && location !== 'unknown') {
-        locationCounts[location] = (locationCounts[location] || 0) + 1;
-      }
-    });
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
-    return Object.entries(locationCounts)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10); // Top 10 locations
-  }, [characters]);
-
-  if (initialLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading Rick & Morty characters...</p>
-        </div>
-      </div>
-    );
-  }
+  // Show the chart button only if there's a search term
+  const showChartButton = debouncedSearchTerm.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,41 +97,44 @@ export default function Home() {
           <p className="text-gray-600">Search and explore characters from the Rick & Morty universe</p>
         </header>
 
-        <div className="mb-6">
+        {/* Search Section */}
+        <div className="mb-6 flex items-center gap-4">
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Search characters by name..."
-            className="max-w-md"
+            className="w-96"
           />
+          
+          {showChartButton && (
+            <Button 
+              onClick={handleOpenModal}
+              variant="secondary"
+              className="whitespace-nowrap cursor-pointer"
+            >
+              View Chart
+            </Button>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
-          <div className="lg:col-span-4">
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">Characters</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  {characters.length} character{characters.length !== 1 ? 's' : ''} found
-                </p>
-              </div>
-              <CharacterTable characters={characters} loading={loading} />
-            </div>
+        {/* Character List */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900">Characters</h2>
+            <p className="text-sm text-gray-500 mt-1">
+              {characters.length} character{characters.length !== 1 ? 's' : ''} found
+              {debouncedSearchTerm && (
+                <span className="ml-1">
+                  for "{debouncedSearchTerm}"
+                </span>
+              )}
+            </p>
           </div>
-
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">Locations</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Distribution by location
-                </p>
-              </div>
-              <div className="p-6">
-                <LocationChart data={locationStats} />
-              </div>
-            </div>
-          </div>
+          <CharacterTable 
+            characters={characters} 
+            loading={loading} 
+            initialLoading={initialLoading}
+          />
         </div>
 
         {hasMore && !loading && (
@@ -140,7 +142,36 @@ export default function Home() {
             <p className="text-gray-500">Scroll down to load more characters...</p>
           </div>
         )}
+
+        {/* Modal with Chart */}
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          title="Location Distribution"
+        >
+          <div className="p-6">
+            <p className="text-sm text-gray-600 mb-4">
+              Character distribution by location{debouncedSearchTerm && ` for "${debouncedSearchTerm}"`}
+            </p>
+            <LocationChart searchTerm={debouncedSearchTerm} />
+          </div>
+        </Modal>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading Rick & Morty characters...</p>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -1,15 +1,20 @@
 import { Spinner } from "@/components/atoms/Spinner";
 import { TableCell } from "@/components/atoms/TableCell";
 import { TableRow } from "@/components/molecules/TableRow";
+import { TableSkeleton } from "./skeleton";
 import { Character } from "@/type/character";
-
 
 interface CharacterTableProps {
   characters: Character[];
   loading?: boolean;
+  initialLoading?: boolean;
 }
 
-export function CharacterTable({ characters, loading = false }: CharacterTableProps) {
+export function CharacterTable({ characters, loading = false, initialLoading = false }: CharacterTableProps) {
+  if (initialLoading) {
+    return <TableSkeleton rows={10} />;
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white">
@@ -39,7 +44,7 @@ export function CharacterTable({ characters, loading = false }: CharacterTablePr
         </tbody>
       </table>
 
-      {characters.length === 0 && !loading && (
+      {characters.length === 0 && !loading && !initialLoading && (
         <div className="px-6 py-8 text-center text-gray-500">
           No characters found
         </div>

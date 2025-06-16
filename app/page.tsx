@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/atoms/Buttons';
 import { Modal } from '@/components/atoms/Modal';
+import { ScrollToTop } from '@/components/atoms/ScrollToTop';
 import { SearchInput } from '@/components/molecules/SearchInput';
 import { CharacterTable } from '@/components/organisms/CharacterTable';
 import { LocationChart } from '@/components/organisms/LocationChart';
@@ -15,7 +16,7 @@ import { useDebounce } from 'use-debounce';
 function HomeContent() {
   const { updateParam, getParam } = useUrlParams();
   const initialSearchTerm = getParam('search');
-  
+
   const [characters, setCharacters] = useState<Character[]>([]);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
@@ -25,7 +26,6 @@ function HomeContent() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Update URL when search term changes
   useEffect(() => {
     updateParam('search', debouncedSearchTerm);
   }, [debouncedSearchTerm, updateParam]);
@@ -36,7 +36,7 @@ function HomeContent() {
     } else {
       setLoading(true);
     }
-    
+
     try {
       const data = await fetchCharacters(search, page);
       const newCharacters = data.characters.results;
@@ -57,19 +57,16 @@ function HomeContent() {
     }
   }, []);
 
-  // Initial load
   useEffect(() => {
     loadCharacters(1, initialSearchTerm, true);
   }, [loadCharacters, initialSearchTerm]);
 
-  // Search effect
   useEffect(() => {
     if (debouncedSearchTerm !== searchTerm) return;
     setCurrentPage(1);
     loadCharacters(1, debouncedSearchTerm, true);
   }, [debouncedSearchTerm, loadCharacters, searchTerm]);
 
-  // Infinite scroll
   const fetchMoreData = useCallback(() => {
     if (!loading && hasMore) {
       loadCharacters(currentPage + 1, debouncedSearchTerm, false);
@@ -86,7 +83,6 @@ function HomeContent() {
     setIsModalOpen(false);
   };
 
-  // Show the chart button only if there's a search term
   const showChartButton = debouncedSearchTerm.trim().length > 0;
 
   return (
@@ -97,7 +93,6 @@ function HomeContent() {
           <p className="text-gray-600">Search and explore characters from the Rick & Morty universe</p>
         </header>
 
-        {/* Search Section */}
         <div className="mb-6 flex items-center gap-4">
           <SearchInput
             value={searchTerm}
@@ -105,19 +100,18 @@ function HomeContent() {
             placeholder="Search characters by name..."
             className="w-96"
           />
-          
+
           {showChartButton && (
-            <Button 
+            <Button
               onClick={handleOpenModal}
               variant="secondary"
-              className="whitespace-nowrap cursor-pointer"
+              className="whitespace-nowrap h-11 cursor-pointer"
             >
               View Chart
             </Button>
           )}
         </div>
 
-        {/* Character List */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-xl font-semibold text-gray-900">Characters</h2>
@@ -130,9 +124,9 @@ function HomeContent() {
               )}
             </p>
           </div>
-          <CharacterTable 
-            characters={characters} 
-            loading={loading} 
+          <CharacterTable
+            characters={characters}
+            loading={loading}
             initialLoading={initialLoading}
           />
         </div>
@@ -143,7 +137,6 @@ function HomeContent() {
           </div>
         )}
 
-        {/* Modal with Chart */}
         <Modal
           isOpen={isModalOpen}
           onClose={handleCloseModal}
@@ -157,6 +150,8 @@ function HomeContent() {
           </div>
         </Modal>
       </div>
+
+      <ScrollToTop threshold={300} />
     </div>
   );
 }

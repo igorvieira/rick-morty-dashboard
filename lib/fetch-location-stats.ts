@@ -119,7 +119,7 @@ export async function fetchLocationStats(searchName?: string): Promise<LocationS
        * Fetch 3 pages in parallel with character name filter
        * Limited to 3 pages to balance completeness with performance
        */
-      const promises: Promise<any>[] = [];
+       const promises: Array<ReturnType<typeof graphqlClient.request>> = [];
       
       for (let page = 1; page <= 3; page++) {
         promises.push(
@@ -135,7 +135,12 @@ export async function fetchLocationStats(searchName?: string): Promise<LocationS
         );
       }
 
-      const results = await Promise.all(promises);
+      const results = await Promise.all(promises) as Array<{
+        characters: {
+          info: { next: number | null };
+          results: Array<{ location: { name: string } }>;
+        };
+      }>;
       
       results.forEach(data => {
         data.characters.results.forEach((character: { location: { name: string; }; }) => {

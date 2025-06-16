@@ -1,3 +1,8 @@
+![image](https://github.com/user-attachments/assets/a6dbc8f2-e8b0-43bd-b6bc-f4b72c690a7e)
+
+[![.github/workflows/unit.yml](https://github.com/igorvieira/rick-morty-dashboard/actions/workflows/unit.yml/badge.svg)](https://github.com/igorvieira/rick-morty-dashboard/actions/workflows/unit.yml)
+
+
 # Rick & Morty Characters
 
 > A modern, responsive web application for exploring Rick & Morty characters with advanced search, location statistics, and theme switching capabilities.

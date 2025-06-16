@@ -1,8 +1,7 @@
 'use client';
 
-import { Button } from "@/components/atoms/Buttons";
-import { Input } from "@/components/atoms/Input";
-
+import { Input } from '@/components/atoms/Input';
+import { X } from 'lucide-react';
 
 interface SearchInputProps {
   value: string;
@@ -17,24 +16,22 @@ export function SearchInput({ value, onChange, placeholder, className = '' }: Se
   };
 
   return (
-    <div className={`flex gap-2 ${className}`}>
-      <div className="flex-1">
-        <Input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-        />
-      </div>
+    <div className={`relative ${className}`}>
+      <Input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="pr-10"
+      />
       {value && (
-        <Button
+        <button
           type="button"
-          variant="secondary"
           onClick={handleClear}
-          className="px-3"
+          className="absolute right-3 top-1/2 transform cursor-pointer -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
         >
-          Clear
-        </Button>
+          <X size={16} className='text-black' />
+        </button>
       )}
     </div>
   );

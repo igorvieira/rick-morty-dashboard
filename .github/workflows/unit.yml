@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ main ]Add commentMore actions
+    branches: [ main ]
 
 jobs:
   test:

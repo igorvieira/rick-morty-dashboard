@@ -5,7 +5,7 @@
 
 # Rick & Morty Characters
 
-> A modern, responsive web application for exploring Rick & Morty characters with advanced search, location statistics, and theme switching capabilities.
+
 
 ## Features
 
@@ -140,19 +140,7 @@ components/
 - **Atomic Design**: Scalable and maintainable component structure
 
 #### 5. Data Flow - Excalidraw
-```
-API (Rick & Morty GraphQL) 
-    ↓
-GraphQL Client (with caching)
-    ↓
-Custom Hooks (useInfiniteScroll, useUrlParams)
-    ↓
-Page Components (app/page.tsx)
-    ↓
-Organisms (CharacterTable, LocationChart)
-    ↓
-Molecules & Atoms
-```
+![image](https://github.com/user-attachments/assets/07fe6360-55cb-4b40-a2bd-bbc4a6ad422a)
 
 ## API Integration
 
@@ -166,16 +154,7 @@ The application integrates with the [Rick and Morty GraphQL API](https://rickand
 
 - **Unit Tests**: Individual component functionality
 - **Integration Tests**: Component interaction and data flow
-- **Accessibility Tests**: ARIA compliance and keyboard navigation
-- **Performance Tests**: IntersectionObserver and caching verification
 
-
-## Performance Metrics
-
-- **First Contentful Paint**: < 1.5s
-- **Largest Contentful Paint**: < 2.5s
-- **Cumulative Layout Shift**: < 0.1
-- **Time to Interactive**: < 3s
 
 ## License
 

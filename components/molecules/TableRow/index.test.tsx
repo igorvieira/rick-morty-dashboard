@@ -1,11 +1,14 @@
 import { render, screen, cleanup } from '@testing-library/react';
 import { test, expect, afterEach, vi } from 'vitest';
 import { TableRow } from './';
-import { Character } from '@/type/character';
+import { Character } from '@/types/character';
 
 // Mock TableCell component
 vi.mock('../atoms/TableCell', () => ({
-  TableCell: ({ children }: any) => <td data-testid="table-cell">{children}</td>,
+  TableCell: ({ children }: {
+    children: React.ReactNode;
+  }) => <td data-testid="table-cell">{children}</td>,
+
 }));
 
 afterEach(() => {

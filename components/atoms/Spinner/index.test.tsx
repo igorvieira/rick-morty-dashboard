@@ -4,8 +4,10 @@ import { Spinner } from './';
 
 // Mock do ícone Lucide
 vi.mock('lucide-react', () => ({
-  Loader2: ({ className, ...props }: any) => (
-    <div data-testid="loader-icon" className={className} {...props} />
+  Loader2: ({ className }: {
+    className?: string;
+  }) => (
+    <div data-testid="loader-icon" className={className} />
   ),
 }));
 

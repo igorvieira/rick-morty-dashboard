@@ -3,9 +3,7 @@ import { test, expect, afterEach, vi } from 'vitest';
 import { SearchInput } from './';
 
 vi.mock('lucide-react', () => ({
-  X: ({ size, className, ...props }: any) => (
-    <div data-testid="x-icon" {...props} />
-  ),
+  X: () => <svg data-testid="x-icon" />
 }));
 
 afterEach(() => {

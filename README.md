@@ -1,6 +1,7 @@
 ![image](https://github.com/user-attachments/assets/a6dbc8f2-e8b0-43bd-b6bc-f4b72c690a7e)
 
 [![.github/workflows/unit.yml](https://github.com/igorvieira/rick-morty-dashboard/actions/workflows/unit.yml/badge.svg)](https://github.com/igorvieira/rick-morty-dashboard/actions/workflows/unit.yml)
+[![E2E TestsAdd commentMore actions](https://github.com/igorvieira/rick-morty-dashboard/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/igorvieira/rick-morty-dashboard/actions/workflows/e2e-tests.yml)
 
 
 # Rick & Morty Characters
@@ -15,6 +16,7 @@
 - 📱 **Fully responsive** design for all device sizes
 - ⚡ **Performance optimized** with caching and parallel requests
 - 🧪 **Comprehensive testing** with Vitest and React Testing Library
+- 🤖 End-to-end testing with automated user journey validation
 
 ## Tech Stack
 

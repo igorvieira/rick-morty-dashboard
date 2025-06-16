@@ -1,12 +1,20 @@
 import { TableCell } from "@/components/atoms/TableCell";
 import { Character } from "@/type/character";
+
 import Image from "next/image";
 
 interface TableRowProps {
   character: Character;
+  onCharacterClick?: (characterName: string) => void;
 }
 
-export function TableRow({ character }: TableRowProps) {
+export function TableRow({ character, onCharacterClick }: TableRowProps) {
+  const handleNameClick = () => {
+    if (onCharacterClick) {
+      onCharacterClick(character.name);
+    }
+  };
+
   return (
     <tr className="hover:bg-gray-50">
       <TableCell>
@@ -18,7 +26,12 @@ export function TableRow({ character }: TableRowProps) {
             height={16}
             className="h-10 w-10 rounded-full object-cover"
           />
-          <span className="font-medium">{character.name}</span>
+          <button
+            onClick={handleNameClick}
+            className="font-medium text-left transition-colors cursor-pointer underline text-gray-950"
+          >
+            {character.name}
+          </button>
         </div>
       </TableCell>
       <TableCell>

@@ -83,6 +83,14 @@ function HomeContent() {
     setIsModalOpen(false);
   };
 
+  const handleCharacterClick = (characterName: string) => {
+    setSearchTerm(characterName);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   const showChartButton = debouncedSearchTerm.trim().length > 0;
 
   return (
@@ -119,7 +127,7 @@ function HomeContent() {
               {characters.length} character{characters.length !== 1 ? 's' : ''} found
               {debouncedSearchTerm && (
                 <span className="ml-1">
-                  {`for "${debouncedSearchTerm}"`}
+                  for "{debouncedSearchTerm}"
                 </span>
               )}
             </p>
@@ -128,6 +136,7 @@ function HomeContent() {
             characters={characters}
             loading={loading}
             initialLoading={initialLoading}
+            onCharacterClick={handleCharacterClick}
           />
         </div>
 

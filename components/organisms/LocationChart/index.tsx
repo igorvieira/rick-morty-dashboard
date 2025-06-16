@@ -1,7 +1,7 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchLocationStats } from '@/lib/fetch-location-stats';
 import { ChartSkeleton } from './skeleton';
 import { LocationStats } from '@/type/character';
@@ -16,7 +16,7 @@ interface CustomLegendProps {
 }
 
 function CustomLegend({ data, colors }: CustomLegendProps) {
-  const total = data.reduce((sum, item) => sum + item.count, 0);
+ const total = useMemo(() => data.reduce((sum, item) => sum + item.count, 0), [data]);
 
   return (
     <div className="mt-4 space-y-2">
@@ -49,22 +49,28 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+
     const loadLocationStats = async () => {
       try {
         setLoading(true);
         setError(null);
         const stats = await fetchLocationStats(searchTerm || '');
         setData(stats);
+
       } catch (err) {
         setError('Failed to load location data');
         console.error('Error loading location stats:', err);
       } finally {
         setLoading(false);
+       
       }
     };
 
     loadLocationStats();
   }, [searchTerm]);
+
+    const chartData = useMemo(() => data, [data]);
+
 
   if (loading) {
     return <ChartSkeleton />;
@@ -78,7 +84,7 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
     );
   }
 
-  if (data.length === 0) {
+  if (chartData.length === 0) {
     return (
       <div className="h-96 flex items-center justify-center text-gray-500">
         No location data available
@@ -99,7 +105,7 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
               fill="#8884d8"
               dataKey="count"
             >
-              {data.map((_, index) => (
+              {chartData.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
@@ -108,7 +114,7 @@ export function LocationChart({ searchTerm }: LocationChartProps) {
         </ResponsiveContainer>
       </div>
 
-      <CustomLegend data={data} colors={COLORS} />
+      <CustomLegend data={chartData} colors={COLORS} />
     </div>
   );
 }
